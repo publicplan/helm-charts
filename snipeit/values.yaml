@@ -112,6 +112,8 @@ resources: {}
 
 nodeSelector: {}
 
+extraContainers: {}
+
 tolerations: []
 
 affinity: {}

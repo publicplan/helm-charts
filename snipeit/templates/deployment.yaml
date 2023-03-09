@@ -74,6 +74,9 @@ spec:
             - name: data
               mountPath: {{ .Values.persistence.sessions.mountPath }}
               subPath: {{ .Values.persistence.sessions.subPath }}
+      {{- if .Values.extraContainers }}
+{{ toYaml .Values.extraContainers | indent 8}}
+      {{- end }}
       volumes:
         - name: data
         {{- if .Values.persistence.enabled }}

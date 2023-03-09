@@ -97,6 +97,7 @@ and their default values.
 | `service.externalIPs`                | service external IP addresses                         | `[]`                           |
 | `resources`                          | CPU/Memory resource requests/limits                   | `{}`                           |
 | `nodeSelector`                       | Node labels for pod assignment                        | `{}`                           |
+| `extraContainers`                    | Additional sidecar contains for the snipeit pod       | `{}`                           |
 | `tolerations`                        | Toleration labels for pod assignment                  | `[]`                           |
 | `affinity`                           | Affinity settings for pod assignment                  | `{}`                           |
 
