@@ -34,6 +34,10 @@ spec:
             - name: data
               mountPath: {{ .Values.persistence.sessions.mountPath }}
               subPath: {{ .Values.persistence.sessions.subPath }}
+        {{- with .Values.resourcesInitContainer }}
+          resources:
+            {{ toYaml . | nindent 12 }}
+        {{- end }}
       containers:
         - name: {{ include "snipeit.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
