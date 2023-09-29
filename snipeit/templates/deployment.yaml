@@ -20,6 +20,11 @@ spec:
         {{ include "snipeit.selector" . | indent 8 | trim }}
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    {{- if .Values.extraAnnotations }}
+      {{- range $key, $value := .Values.extraAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+    {{- end }}
     spec:
       initContainers:
         - name: config-data
@@ -29,6 +34,10 @@ spec:
             - name: data
               mountPath: {{ .Values.persistence.sessions.mountPath }}
               subPath: {{ .Values.persistence.sessions.subPath }}
+        {{- with .Values.resourcesInitContainer }}
+          resources:
+            {{ toYaml . | nindent 12 }}
+        {{- end }}
       containers:
         - name: {{ include "snipeit.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -44,9 +53,15 @@ spec:
               value: {{ .Values.config.snipeit.timezone | quote }}
             - name: APP_LOCALE
               value: {{ .Values.config.snipeit.locale | quote }}
+
           envFrom:
             - secretRef:
                 name: {{ include "snipeit.fullname" . }}
+            {{ if .Values.config.externalSecrets }}
+            - secretRef:
+                name: {{ .Values.config.externalSecrets }}
+            {{ end }}
+
           ports:
             - name: http
               containerPort: 80
@@ -74,6 +89,9 @@ spec:
             - name: data
               mountPath: {{ .Values.persistence.sessions.mountPath }}
               subPath: {{ .Values.persistence.sessions.subPath }}
+            {{- if .Values.extraVolumeMounts }}
+              {{- toYaml .Values.extraVolumeMounts | nindent 12}}
+            {{- end }}
       {{- if .Values.extraContainers }}
 {{ toYaml .Values.extraContainers | indent 8}}
       {{- end }}
@@ -84,6 +102,9 @@ spec:
             claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ include "snipeit.fullname" . }}{{- end }}
         {{- else }}
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.extraVolumes }}
+          {{- toYaml .Values.extraVolumes | nindent 8}}
         {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:

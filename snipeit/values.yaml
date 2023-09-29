@@ -35,10 +35,19 @@ config:
     timezone: Europe/Berlin
     locale: en
     envConfig: {}
-
+  ## Name of the secret containing the database connection details
+  ## kubectl create secret generic my-db-secret \
+  ##   --from-literal=MYSQL_USER=<your_mysql_user> \
+  ##   --from-literal=MYSQL_DATABASE=<your_mysql_database> \
+  ##   --from-literal=MYSQL_PASSWORD=<your_mysql_password> \
+  ##   --from-literal=MYSQL_PORT_3306_TCP_ADDR=<your_mysql_host> \
+  ##   --from-literal=MYSQL_PORT_3306_TCP_PORT=<your_mysql_port> \
+  ##   --from-literal=APP_KEY=<your_app_key>
+ 
+  externalSecrets: ""
 mysql:
   ## Whether to deploy a mysql server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
-  enabled: true
+  enabled: false
   ## Create a database and a database user
   ##
   mysqlUser: snipeit
@@ -109,6 +118,18 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+resourcesInitContainer: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # These resources are useful for namespaces with resource quotas.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
 
 nodeSelector: {}
 
@@ -117,3 +138,22 @@ extraContainers: {}
 tolerations: []
 
 affinity: {}
+
+extraAnnotations: {}
+  # Extra Annotations that will be added to the SnipeIT Pod(s)
+  # app.kubernetes.io/instance: snipeit
+extraManifests: []
+
+extraVolumeMounts: []
+  # Additional volumeMounts to the container
+  # - name: secrets-store01-inline
+  #   mountPath: /mnt/secrets-store
+
+extraVolumes: []
+  # Additional volumes to the pod
+  # - csi:
+  #   driver: secrets-store.csi.k8s.io
+  #   readOnly: true
+  #   volumeAttributes:
+  #     secretProviderClass: "secret-csi-provider"
+  #  name : secrets-store01-inline
