@@ -28,7 +28,11 @@ spec:
     spec:
       initContainers:
         - name: config-data
+          {{- if .Values.imageInitContainer.repository }}
+          image: "{{ .Values.imageInitContainer.repository }}:{{ .Values.imageInitContainer.tag | default "latest" }}"
+          {{- else }}
           image: busybox
+          {{- end }}
           command: ["sh", "-c", "find {{ .Values.persistence.sessions.mountPath }} -not -user 1000 -exec chown 1000 {} \\+"]
           volumeMounts:
             - name: data

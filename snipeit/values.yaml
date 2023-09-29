@@ -13,6 +13,12 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+imageInitContainer:
+  repository: busybox
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
 service:
   type: ClusterIP
   annotations: {}
