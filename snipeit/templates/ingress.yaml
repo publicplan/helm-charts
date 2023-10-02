@@ -51,10 +51,10 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: 80
+                  number: {{ $.Values.ingress.port | default 80 }}
               {{- else }}
               serviceName: {{ $fullName }}
-              servicePort: 80
+              servicePort: {{ $.Values.ingress.port | default 80 }}
               {{- end }}
   {{- end }}
 {{- end }}

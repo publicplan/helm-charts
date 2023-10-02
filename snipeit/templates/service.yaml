@@ -32,7 +32,7 @@ spec:
 {{- end }}
   ports:
     - name: http
-      port: 80
+      port: {{ .Values.ingress.port | default 80 }}
       protocol: TCP
   selector:
     {{ include "snipeit.selector" . | indent 4 | trim }}
